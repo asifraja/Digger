@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
 
 namespace Digger.Common.Utils
 {
@@ -51,6 +53,19 @@ namespace Digger.Common.Utils
                 ms.Position = 0;
                 return (T[])bf.Deserialize(ms);
             }
+        }
+
+        public static string[] ExtractUsingTokens(this string text, IEnumerable<string> tokens)
+        {
+            var result = new List<string>();
+            foreach (var token in tokens)
+            {
+                var toks = token.Split(new []{"***"}, StringSplitOptions.None);
+                Regex regex = new Regex($"{Regex.Escape(toks[0])}(.*?){Regex.Escape(toks[1])}");
+                var v = regex.Match(text);
+                if(v.Success) result.Add(v.Groups[1].ToString().Trim());
+            }
+            return result.ToArray();
         }
     }
 }

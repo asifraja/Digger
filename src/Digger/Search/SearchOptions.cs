@@ -13,6 +13,8 @@ namespace Digger.Search
 
         [Option('c', "case-sensitive", Default = false, HelpText = "case sensitive search")]
         public bool CaseSensitive { get; set; }
+        [Option('e', "extract", HelpText = "find extact value between start and end string i.e. tokenStart***tokenEnd, must have three *")]
+        public IEnumerable<string> Extract { get; set; }
 
         [Option('f', "find", HelpText = "find token text/string to replace with, see --replace flag")]
         public string Find { get; set; }

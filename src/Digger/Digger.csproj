@@ -61,7 +61,7 @@
     <Compile Include="Common\Utils\LambdaExtensions.cs" />
     <Compile Include="Common\Interfaces\ICommand.cs" />
     <Compile Include="Common\Interfaces\IProcess.cs" />
-    <Compile Include="Parafile\OptionsFile.cs" />
+    <Compile Include="Common\OptionsFile.cs" />
     <Compile Include="Search\Output\HtmlOutput.cs" />
     <Compile Include="Search\SearchProcess.cs" />
     <Compile Include="Search\SearchCommand.cs" />

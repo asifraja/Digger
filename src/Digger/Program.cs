@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using Digger.Common;
 using Digger.Compare;
 using Digger.Search;
 using System;
@@ -23,7 +24,7 @@ namespace Digger
             })
             .WithParsed<OptionsFile>(options =>
             {
-                var parafile = File.ReadAllLines(options.Parafile);
+                var parafile = File.ReadAllLines(options.File);
                 if (parafile[0].ToLowerInvariant().StartsWith("search"))
                 {
                     Parser.Default.ParseArguments<SearchOptions>(parafile).WithParsed<SearchOptions>(opts => { SearchExecute(opts); });

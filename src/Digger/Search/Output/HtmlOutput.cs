@@ -81,7 +81,7 @@ namespace Digger.Search.Output
                 {
                     var sameLine = true;
                     var prevLine = string.Empty;
-                    foreach (var foundFile in group.OrderBy(o=>o.Filename))
+                    foreach (var foundFile in group.OrderBy(o=>o.Filename).ThenBy(x=>x.LineNo))
                     {
                         var line = _lineTemplate.Replace("{{lineno}}", foundFile.LineNo.ToString())
                             .Replace("{{filename}}", foundFile.Filename)
