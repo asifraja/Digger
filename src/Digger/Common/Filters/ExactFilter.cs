@@ -4,6 +4,7 @@ using Digger.Search;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace Digger.Common.Filters
@@ -17,6 +18,7 @@ namespace Digger.Common.Filters
             {
                 if (!string.IsNullOrEmpty(line) && line.Contains(seekString))
                 {
+                    if (options.And.Any() && !line.AllContains(options.And)) continue;
                     var si = Math.Max(0, lineNo - options.BeforeLines);
                     var ei = Math.Min(sourceLines.Length, lineNo + options.AfterLines);
                     var noOfLines = ei - si + 1;

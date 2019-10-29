@@ -2,6 +2,6 @@
 {
     public interface IProcess
     {
-        void Process();
+        void Execute();
     }
 }

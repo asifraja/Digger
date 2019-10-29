@@ -1,5 +1,6 @@
 ﻿using Digger.Common.Interfaces;
 using Digger.Common.Models;
+using Digger.Search.Output;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,16 +8,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Digger.Search.Output
+namespace Digger.Search.Process
 {
 
-    public class UpdateFiles : SearchProcess, IProcess
+    public class ProcessFiles : SearchProcess, IProcess
     {
-        public UpdateFiles(SearchOptions options, IOrderedEnumerable<IGrouping<string, FoundLine>> foundFiles, CommandStats stats): base(options, foundFiles, stats)
+        public ProcessFiles(SearchOptions options, IOrderedEnumerable<IGrouping<string, FoundLine>> foundFiles, CommandStats stats) : base(options, foundFiles, stats)
         {
         }
 
-        public void Process()
+        public void Execute()
         {
             foreach (var fileGroup in FoundLineCollection)
             {
@@ -31,16 +32,16 @@ namespace Digger.Search.Output
                     var lines = File.ReadAllLines(filename);
                     var deletedLines = new int[lines.Length];
                     var remainingLines = new List<string>();
-                    foreach (var foundLine in fileGroup.OrderBy(o=>o.LineNo))
+                    foreach (var foundLine in fileGroup.OrderBy(o => o.LineNo))
                     {
-                        var s = Math.Max(0,foundLine.LineNo - 1 - Options.BeforeLines);
-                        var e = Math.Min(lines.Length-1, foundLine.LineNo - 1 + Options.AfterLines);
-                        for(int i=s; i<=e; i++)
+                        var s = Math.Max(0, foundLine.LineNo - 1 - Options.BeforeLines);
+                        var e = Math.Min(lines.Length - 1, foundLine.LineNo - 1 + Options.AfterLines);
+                        for (int i = s; i <= e; i++)
                         {
                             deletedLines[i] = -1;
                         }
                     }
-                    for(var i=0;i< lines.Length;i++)
+                    for (var i = 0; i < lines.Length; i++)
                     {
                         if (deletedLines[i] == -1)
                         {
@@ -60,11 +61,11 @@ namespace Digger.Search.Output
                 // update file if it need updating. 
                 if (!string.IsNullOrEmpty(content))
                 {
-                    var foundFind = string.IsNullOrEmpty(Options.Find) ? false:content.Contains(Options.Find);
-                    if ((foundFind || fileIsUpdated))
+                    var foundFind = string.IsNullOrEmpty(Options.Find) ? false : content.Contains(Options.Find);
+                    if (foundFind || fileIsUpdated)
                     {
                         if (Options.Commit)
-                            File.WriteAllText(filename, foundFind?content.Replace(Options.Find, Options.Replace):content);
+                            File.WriteAllText(filename, foundFind ? content.Replace(Options.Find, Options.Replace) : content);
                         else
                             File.WriteAllText(@"D:\temp\updated-file.txt", foundFind ? content.Replace(Options.Find, Options.Replace) : content);
                     }

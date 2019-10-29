@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Digger.Search.Process;
 
 namespace Digger.Search
 {
@@ -70,7 +71,7 @@ namespace Digger.Search
                 orderby seekStringGroup.Key
                 select seekStringGroup;
 
-            new HtmlOutput(options, seekStringCollection, Stats).Process();
+            new HtmlOutput(options, seekStringCollection, Stats).Execute();
         }
 
         private void ProcessConsoleOutput(SearchOptions options, IEnumerable<FoundLine> foundLines)
@@ -83,7 +84,7 @@ namespace Digger.Search
                 orderby seekStringGroup.Key
                 select seekStringGroup;
 
-            new ConsoleOutput(options, seekStringCollection, Stats).Process();
+            new ConsoleOutput(options, seekStringCollection, Stats).Execute();
         }
 
         private void ProcessFileUpdateRelatedDirectives(SearchOptions options, IEnumerable<FoundLine> foundLines)
@@ -97,7 +98,7 @@ namespace Digger.Search
                 orderby fileGroup.Key
                 select fileGroup;
 
-            new UpdateFiles(options, fileCollection, Stats).Process();
+            new ProcessFiles(options, fileCollection, Stats).Execute();
         }
     }
 }

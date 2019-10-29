@@ -68,7 +68,7 @@ namespace Digger.Search.Output
             if (File.Exists(_footerTemplatePath)) _footerTemplate = File.ReadAllText(_footerTemplatePath);
         }     
 
-        public void Process()
+        public void Execute()
         {
             _title = Options.Output + " : " + DateTime.Now.ToLocalTime();
             _header.AppendLine("Digger CLI - &copy; 2019-" + (DateTime.Now.Year + 1));
@@ -89,7 +89,7 @@ namespace Digger.Search.Output
                             .Replace("{{filenameExt}}", foundFile.FilenameExt)
                             .Replace("{{line}}", WebUtility.HtmlEncode(foundFile.Line.Substring(0, Math.Min(foundFile.Line.Length, 255) - 1).Trim()) + (foundFile.Line.Length > 254 ? "<b>...</b>" : ""));
                         if (string.IsNullOrEmpty(prevLine)) prevLine = foundFile.Line;
-                        if (prevLine != foundFile.Line) sameLine = false;
+                        if (prevLine.Trim().Replace(" ", "").Replace("\t", "") != foundFile.Line.Trim().Replace(" ", "").Replace("\t", "")) sameLine = false;
                         _content.AppendLine(line);
                     }
                     if(!sameLine)  _content.AppendLine("<span class=\"badge badge-warning\">DIFFERENT</span>");

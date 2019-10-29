@@ -16,6 +16,7 @@ namespace Digger.Common.Filters
             {
                 if (!string.IsNullOrEmpty(line) && line.Contains(seekString, StringComparison.OrdinalIgnoreCase))
                 {
+                    if (options.And.Any() && !line.AllContains(options.And, StringComparison.OrdinalIgnoreCase)) continue;
                     var si = Math.Max(0, lineNo - options.BeforeLines);
                     var ei = Math.Min(sourceLines.Length, lineNo + options.AfterLines);
                     var noOfLines = ei - si + 1;

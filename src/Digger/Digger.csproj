@@ -72,13 +72,12 @@
     <Compile Include="Common\Filters\ContainsFilter.cs" />
     <Compile Include="Common\Models\EjDiffModel.cs" />
     <Compile Include="Search\Output\ConsoleOutput.cs" />
-    <Compile Include="Processor.cs" />
     <Compile Include="Common\Filters\ExactFilter.cs" />
     <Compile Include="Common\Models\FoundLine.cs" />
     <Compile Include="Common\Utils\StringExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Search\Update\UpdateFiles.cs" />
+    <Compile Include="Search\Process\ProcessFiles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

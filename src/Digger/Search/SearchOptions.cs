@@ -36,5 +36,8 @@ namespace Digger.Search
 
         [Option('p', "purge", Default = false, HelpText = "purge line(s) where text/string was found, see flag --commit and --text")]
         public bool PurgeLine { get; set; }
+
+        [Option("and",  HelpText = "Seek must have and text on the same line")]
+        public IEnumerable<string> And { get; set; }
     }
 }
