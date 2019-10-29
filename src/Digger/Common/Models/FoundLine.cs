@@ -10,7 +10,8 @@ namespace Digger.Common.Models
         public string Filename { get; }
         public string FilenameExt { get; }
         public int LineNo { get; }
-        public FoundLine(string filename, string filenameExt, string line, int lineNo, string seekString)
+        public int FodlerIndex { get; }
+        public FoundLine(string filename, string filenameExt, string line, int lineNo, string seekString, int folderIndex)
         {
             FilenameExt = filenameExt;
             Filename = filename;

@@ -27,7 +27,7 @@ namespace Digger.Search.Output
                 if (Options.Extract.Any())
                 {
                     StringBuilder allLines = new StringBuilder();
-                    foreach (var foundFile in seekStringGroup.OrderBy(f => f.Filename).ThenBy(f => f.LineNo))
+                    foreach (var foundFile in seekStringGroup.OrderBy(f => f.FodlerIndex).ThenBy(f => f.Filename).ThenBy(f => f.LineNo))
                     {
                         allLines.Append(foundFile.Line);
                     }
@@ -43,9 +43,9 @@ namespace Digger.Search.Output
                 else
                 {
                     Stats.TotalInstances += seekStringGroup.Count();
-                    foreach (var foundFile in seekStringGroup.OrderBy(f => f.Filename).ThenBy(f => f.LineNo))
+                    foreach (var foundFile in seekStringGroup.OrderBy(f => f.FodlerIndex).ThenBy(f => f.Filename).ThenBy(f => f.LineNo))
                     {
-                        var line = foundFile.Line.Substring(1, Math.Min(foundFile.Line.Length, 1024) - 1).TrimStart() + (foundFile.Line.Length > 1023 ? "<b>...</b>" : "");
+                        var line = foundFile.Line.Substring(1, Math.Min(foundFile.Line.Length, 4048) - 1).TrimStart() + (foundFile.Line.Length > 4047 ? "<b>...</b>" : "");
                         if (Options.Verbose)
                         {
                             Console.WriteLine($"[{foundFile.LineNo}] [{foundFile.Filename}]");

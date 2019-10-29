@@ -77,22 +77,32 @@ namespace Digger.Search.Output
             {
                 _content.AppendLine(_lineHeadTemplate.Replace("{{line-head}}", group.Key).Replace("{{line-count}}", group.Count().ToString()));
                 Stats.TotalInstances += group.Count();
+                var foundFolder = new int[Options.Folders.Count()];
                 if (Options.Verbose)
                 {
                     var sameLine = true;
                     var prevLine = string.Empty;
-                    foreach (var foundFile in group.OrderBy(o=>o.Filename).ThenBy(x=>x.LineNo))
+                    var keyContent = new StringBuilder();
+                    foreach (var foundFile in group.OrderBy(o=>o.FodlerIndex).ThenBy(x=>x.Filename).ThenBy(x => x.LineNo))
                     {
+                        foundFolder[foundFile.FodlerIndex] = 1;
                         var line = _lineTemplate.Replace("{{lineno}}", foundFile.LineNo.ToString())
                             .Replace("{{filename}}", foundFile.Filename)
                             .Replace("{{filenameExtPill}}", Ext2ColorCode(foundFile.Filename, foundFile.FilenameExt))
                             .Replace("{{filenameExt}}", foundFile.FilenameExt)
-                            .Replace("{{line}}", WebUtility.HtmlEncode(foundFile.Line.Substring(0, Math.Min(foundFile.Line.Length, 255) - 1).Trim()) + (foundFile.Line.Length > 254 ? "<b>...</b>" : ""));
+                            .Replace("{{line}}", WebUtility.HtmlEncode(WebUtility.HtmlDecode(foundFile.Line)));
+                        //.Replace("{{line}}", foundFile.Line.Substring(0, Math.Min(foundFile.Line.Length, 4048) - 1).Trim()) + (foundFile.Line.Length > 4048 ? "<b>...</b>" : "");
                         if (string.IsNullOrEmpty(prevLine)) prevLine = foundFile.Line;
                         if (prevLine.Trim().Replace(" ", "").Replace("\t", "") != foundFile.Line.Trim().Replace(" ", "").Replace("\t", "")) sameLine = false;
-                        _content.AppendLine(line);
+                        keyContent.AppendLine(line);
                     }
-                    if(!sameLine)  _content.AppendLine("<span class=\"badge badge-warning\">DIFFERENT</span>");
+                    //foreach (var n in foundFolder)
+                    //{
+                    //    if (foundFolder[n] == 0)
+                    //        _content.AppendLine($"<div class='alert alert-warning'><strong>Warning!</strong> {group.Key} is missing in {Options.Folders.ToArray()[n]}, please validate the entry.</div>");
+                    //}
+                    if (!sameLine)  _content.AppendLine($"<div class='alert alert-danger'><strong>Note!</strong> {group.Key} has different values, please review.</div>");
+                    _content.AppendLine(keyContent.ToString());
                 }
             }
             _footer.AppendLine("Digger CLI by Asif Raja");
