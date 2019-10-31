@@ -28,19 +28,19 @@ namespace Digger.Search
                 Parallel.For(0, Stats.TotalFiles, fileIndex =>
                 {
                     {
-                        var sourceLines = File.ReadAllLines(Files[fileIndex]);
-                        string filenameExt = Path.GetExtension(Files[fileIndex]).ToLower();
+                        var filename = Files[fileIndex];
+                        var sourceLines = File.ReadAllLines(filename);
+                        string filenameExt = Path.GetExtension(filename).ToLower();
                         Stats.FoundFiles++;
+                        var foundInFile = FileFilter.Match(options, filename, filenameExt);
                         for (var lineNo = 0; lineNo < sourceLines.Length; lineNo++)
                         {
                             var line = sourceLines[lineNo];
-                            var lines = options.CaseSensitive ? ExactFilter.Match(options, Files[fileIndex], filenameExt, sourceLines, line, lineNo) : ContainsFilter.Match(options, Files[fileIndex], filenameExt, sourceLines, line, lineNo);
-                            if (lines.Count() > 0)
+                            var lines = LineFilter.Match(options, Files[fileIndex], filenameExt, sourceLines, sourceLines[lineNo]+ " ", lineNo);
+                            if(lines.Count()>0 && foundInFile)
+                            foreach (var processedLine in lines)
                             {
-                                foreach (var processedLine in lines)
-                                {
-                                    foundLines.Add(processedLine);
-                                }
+                                foundLines.Add(processedLine);
                             }
                         }
                     }

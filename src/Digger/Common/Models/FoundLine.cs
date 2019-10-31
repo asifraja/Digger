@@ -13,8 +13,8 @@ namespace Digger.Common.Models
         public int LineNo { get; }
         public int FolderIndex { get; }
         public bool LineIsUpdated { get { return !string.IsNullOrEmpty(PreviousLine) && !string.IsNullOrEmpty(Line) && PreviousLine != Line; } }
-
-        public FoundLine(string filename, string filenameExt, string line, string previousLine, int lineNo, string seekString, int folderIndex)
+        public bool SeekedString { get; }
+        public FoundLine(string filename, string filenameExt, string line, string previousLine, int lineNo, string seekString, int folderIndex,bool seekedString)
         {
             FilenameExt = filenameExt;
             Filename = filename;
@@ -22,6 +22,7 @@ namespace Digger.Common.Models
             LineNo = lineNo;
             SeekString = seekString;
             PreviousLine = previousLine;
+            SeekedString = seekedString;
         }
     }
 }

@@ -62,15 +62,9 @@ namespace Digger.Search.Process
                     }
                     content = nonDeletedContent.ToString();
                     // update file if it need updating. 
-                    if (!string.IsNullOrEmpty(content))
+                    if (!string.IsNullOrEmpty(content) && fileIsUpdated && Options.Commit)
                     {
-                        if (fileIsUpdated)
-                        {
-                            if (Options.Commit)
-                                File.WriteAllText(filename, content);
-                            else
-                                File.WriteAllText(@"D:\temp\updated-file.txt", content);
-                        }
+                        File.WriteAllText(filename, content);
                     }
                 }
             }

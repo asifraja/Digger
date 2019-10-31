@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Commands\ItineraryId.cs" />
+    <Compile Include="Common\Filters\FileFilter.cs" />
     <Compile Include="Common\Models\CommandStats.cs" />
     <Compile Include="Common\Options\BaseOptions.cs" />
     <Compile Include="Common\Commands\BaseCommand.cs" />
@@ -70,7 +71,7 @@
     <Compile Include="Search\SearchOptions.cs" />
     <Compile Include="Common\Options\GenericOptions.cs" />
     <Compile Include="Common\Models\FixedSizedQueue.cs" />
-    <Compile Include="Common\Filters\ContainsFilter.cs" />
+    <Compile Include="Common\Filters\LineFilter.cs" />
     <Compile Include="Common\Models\EjDiffModel.cs" />
     <Compile Include="Search\Output\ConsoleOutput.cs" />
     <Compile Include="Common\Filters\ExactFilter.cs" />

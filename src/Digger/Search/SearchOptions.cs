@@ -16,8 +16,10 @@ namespace Digger.Search
         [Option('e', "extract", HelpText = "find extact value between start and end string i.e. tokenStart***tokenEnd, must have three *")]
         public IEnumerable<string> Extract { get; set; }
 
-        [Option('f', "find", HelpText = "find token text/string to replace with, see --replace flag")]
+        [Option('f', "find", HelpText = "find token text/string to find|replace with")]
         public IEnumerable<string> Find { get; set; }
+        [Option("for", HelpText = "locate files for certain but only files that were found by the -S text")]
+        public string For { get; set; }
 
         [Option('u', "commit", Default = false, HelpText = "commit and update files, see flags -d, --find/--replace.")]
         public bool Commit { get; set; }

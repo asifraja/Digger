@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Digger.Common.Filters
 {
-    class ContainsFilter
+    class LineFilter
     {
         public static IEnumerable<FoundLine> Match(SearchOptions options, string filename, string filenameExt, string[] sourceLines, string line, int lineNo)
         {
@@ -16,9 +16,9 @@ namespace Digger.Common.Filters
             var lineUpdated = false;
             foreach (var seekString in options.SeekStrings)
             {
-                if (!string.IsNullOrEmpty(line) && line.Contains(seekString, StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(line) && ((options.CaseSensitive && line.Contains(seekString)) || (!options.CaseSensitive && line.Contains(seekString, StringComparison.OrdinalIgnoreCase))))
                 {
-                    if (options.And.Any() && !line.AllContains(options.And, StringComparison.OrdinalIgnoreCase)) continue;
+                    if (options.And.Any() && ((options.CaseSensitive && !line.AllContains(options.And)) || (!options.CaseSensitive && !line.AllContains(options.And, StringComparison.OrdinalIgnoreCase)))) continue;
                     var si = Math.Max(0, lineNo - options.BeforeLines);
                     var ei = Math.Min(sourceLines.Length, lineNo + options.AfterLines);
                     var noOfLines = ei - si + 1;
@@ -29,18 +29,21 @@ namespace Digger.Common.Filters
                     {
                         for (var lineNdx = 0; lineNdx < lines.Length; lineNdx++)
                         {
-                            foreach(var find in options.Find)
+                            foreach (var find in options.Find)
                             {
-                                var findParts = find.Split('|');
-                                if (lines[lineNdx].Contains(findParts[0]))
+                                if (find.Contains('|'))
                                 {
-                                    lineUpdated = true;
-                                    lines[lineNdx] = lines[lineNdx].Replace(findParts[0], findParts[1]);
+                                    var findParts = find.Split('|');
+                                    if (lines[lineNdx].Contains(findParts[0]))
+                                    {
+                                        lineUpdated = true;
+                                        lines[lineNdx] = lines[lineNdx].Replace(findParts[0], findParts[1]);
+                                    }
                                 }
                             }
                         }
-                    }                    
-                    result.Add(new FoundLine(filename, filenameExt, string.Join(options.Join ? "" : Environment.NewLine, lines), lineUpdated?previousLine:string.Empty, lineNo + 1, seekString, folderIndex));
+                    }
+                    result.Add(new FoundLine(filename, filenameExt, string.Join(options.Join ? "" : Environment.NewLine, lines), lineUpdated ? previousLine : string.Empty, lineNo + 1, seekString, folderIndex,true));
                 }
             }
             return result;
