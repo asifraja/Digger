@@ -89,7 +89,7 @@ namespace Digger.Search
 
         private void ProcessFileUpdateRelatedDirectives(SearchOptions options, IEnumerable<FoundLine> foundLines)
         {
-            if (!options.PurgeLine && string.IsNullOrEmpty(options.Replace)) return;
+            if (!options.PurgeLine && !options.Find.Any()) return;
             
             // Following creates groups by filename
             var fileCollection =

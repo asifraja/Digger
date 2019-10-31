@@ -26,23 +26,31 @@ namespace Digger.Search.Process
                 var content = string.Empty;
                 var fileIsUpdated = false;
                 if (!File.Exists(filename)) continue;
-                // delete lines
-                if (Options.PurgeLine)
                 {
                     var lines = File.ReadAllLines(filename);
                     var deletedLines = new int[lines.Length];
                     var remainingLines = new List<string>();
                     foreach (var foundLine in fileGroup.OrderBy(o => o.LineNo))
                     {
-                        var s = Math.Max(0, foundLine.LineNo - 1 - Options.BeforeLines);
-                        var e = Math.Min(lines.Length - 1, foundLine.LineNo - 1 + Options.AfterLines);
-                        for (int i = s; i <= e; i++)
+                        var lineNo = foundLine.LineNo - 1;
+                        if (Options.PurgeLine)
                         {
-                            deletedLines[i] = -1;
+                            var s = Math.Max(0, lineNo - Options.BeforeLines);
+                            var e = Math.Min(lines.Length - 1, lineNo + Options.AfterLines);
+                            for (int i = s; i <= e; i++)
+                            {
+                                deletedLines[i] = -1;
+                            }
+                        }
+                        if(foundLine.LineIsUpdated)
+                        {
+                            fileIsUpdated = true;
+                            lines[lineNo] = foundLine.Line;
                         }
                     }
                     for (var i = 0; i < lines.Length; i++)
                     {
+                        // delete marked lines
                         if (deletedLines[i] == -1)
                         {
                             fileIsUpdated = true;
@@ -53,21 +61,16 @@ namespace Digger.Search.Process
                         }
                     }
                     content = nonDeletedContent.ToString();
-                }
-                else
-                {
-                    content = File.ReadAllText(filename);
-                }
-                // update file if it need updating. 
-                if (!string.IsNullOrEmpty(content))
-                {
-                    var foundFind = string.IsNullOrEmpty(Options.Find) ? false : content.Contains(Options.Find);
-                    if (foundFind || fileIsUpdated)
+                    // update file if it need updating. 
+                    if (!string.IsNullOrEmpty(content))
                     {
-                        if (Options.Commit)
-                            File.WriteAllText(filename, foundFind ? content.Replace(Options.Find, Options.Replace) : content);
-                        else
-                            File.WriteAllText(@"D:\temp\updated-file.txt", foundFind ? content.Replace(Options.Find, Options.Replace) : content);
+                        if (fileIsUpdated)
+                        {
+                            if (Options.Commit)
+                                File.WriteAllText(filename, content);
+                            else
+                                File.WriteAllText(@"D:\temp\updated-file.txt", content);
+                        }
                     }
                 }
             }

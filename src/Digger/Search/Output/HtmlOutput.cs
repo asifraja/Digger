@@ -83,29 +83,34 @@ namespace Digger.Search.Output
                     var sameLine = true;
                     var prevLine = string.Empty;
                     var keyContent = new StringBuilder();
-                    foreach (var foundFile in group.OrderBy(o=>o.FodlerIndex).ThenBy(x=>x.Filename).ThenBy(x => x.LineNo))
+                    foreach (var foundFile in group.OrderBy(o=>o.FolderIndex).ThenBy(x=>x.Filename).ThenBy(x => x.LineNo))
                     {
-                        foundFolder[foundFile.FodlerIndex] = 1;
+                        foundFolder[foundFile.FolderIndex] = 1;
                         var line = _lineTemplate.Replace("{{lineno}}", foundFile.LineNo.ToString())
                             .Replace("{{filename}}", foundFile.Filename)
                             .Replace("{{filenameExtPill}}", Ext2ColorCode(foundFile.Filename, foundFile.FilenameExt))
                             .Replace("{{filenameExt}}", foundFile.FilenameExt)
-                            .Replace("{{line}}", WebUtility.HtmlEncode(WebUtility.HtmlDecode(foundFile.Line)));
-                        //.Replace("{{line}}", foundFile.Line.Substring(0, Math.Min(foundFile.Line.Length, 4048) - 1).Trim()) + (foundFile.Line.Length > 4048 ? "<b>...</b>" : "");
+                            .Replace("{{prevline}}", WebUtility.HtmlEncode(WebUtility.HtmlDecode(foundFile.PreviousLine.Substring(0, Math.Min(Options.BufferSize, foundFile.PreviousLine.Length)))))
+                            .Replace("{{line}}", WebUtility.HtmlEncode(WebUtility.HtmlDecode(foundFile.Line.Substring(0,Math.Min(Options.BufferSize, foundFile.Line.Length)))));
                         if (string.IsNullOrEmpty(prevLine)) prevLine = foundFile.Line;
                         if (prevLine.Trim().Replace(" ", "").Replace("\t", "") != foundFile.Line.Trim().Replace(" ", "").Replace("\t", "")) sameLine = false;
                         keyContent.AppendLine(line);
                     }
-                    //foreach (var n in foundFolder)
+                    //for (var n =0; n<foundFolder.Length;n++)
                     //{
                     //    if (foundFolder[n] == 0)
+                    //    {
                     //        _content.AppendLine($"<div class='alert alert-warning'><strong>Warning!</strong> {group.Key} is missing in {Options.Folders.ToArray()[n]}, please validate the entry.</div>");
+                    //    }
                     //}
-                    if (!sameLine)  _content.AppendLine($"<div class='alert alert-danger'><strong>Note!</strong> {group.Key} has different values, please review.</div>");
+                    if (!sameLine)
+                    {
+                        _content.AppendLine($"<div class='alert alert-danger'><strong>Note!</strong> {group.Key} has different values, please review.</div>");
+                    }
                     _content.AppendLine(keyContent.ToString());
                 }
             }
-            _footer.AppendLine("Digger CLI by Asif Raja");
+            _footer.AppendLine("Digger CLI : Authored by Asif Raja");
             
             File.WriteAllText(Options.Output, Content);
         }

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Digger.Common.Commands
 {
-    public abstract class BaseCommand 
+    public abstract class BaseCommand
     {
         public CommandStats Stats { get; }
         private BaseCommand()
@@ -34,6 +34,17 @@ namespace Digger.Common.Commands
             var files = folders.AsParallel().SelectMany(path => exts.AsParallel().SelectMany(searchPattern => Directory.EnumerateFiles(path, searchPattern, searchOption)));
             return files.Where(f => excludeFolders.All(e => !@f.Contains(@e, StringComparison.OrdinalIgnoreCase))).ToArray();
         }
-
     }
+
+    public class FileThing
+    {
+        public FileThing(string folder, string filename)
+        {
+            Filename = filename;
+            Folder = folder;
+        }
+        public string Filename { get; set; }
+        public string Folder { get; set; }
+    }
+
 }

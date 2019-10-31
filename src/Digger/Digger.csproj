@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Commands\ItineraryId.cs" />
     <Compile Include="Common\Models\CommandStats.cs" />
     <Compile Include="Common\Options\BaseOptions.cs" />
     <Compile Include="Common\Commands\BaseCommand.cs" />

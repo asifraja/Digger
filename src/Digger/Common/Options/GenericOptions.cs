@@ -22,6 +22,8 @@ namespace Digger.Common.Options
 
         [Option('v', "verbose", Default = false, HelpText = "Prints all messages to standard output.")]
         public bool Verbose { get; set; }
+        [Option('u', "buffer", Default = 2048, HelpText = "output max number of chars for of line")]
+        public int BufferSize { get; set; }
 
     }
 }

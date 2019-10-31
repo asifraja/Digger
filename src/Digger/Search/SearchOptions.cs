@@ -17,10 +17,7 @@ namespace Digger.Search
         public IEnumerable<string> Extract { get; set; }
 
         [Option('f', "find", HelpText = "find token text/string to replace with, see --replace flag")]
-        public string Find { get; set; }
-
-        [Option('r', "replace", HelpText = "replace the token, see flag --find and --commit ")]
-        public string Replace { get; set; }
+        public IEnumerable<string> Find { get; set; }
 
         [Option('u', "commit", Default = false, HelpText = "commit and update files, see flags -d, --find/--replace.")]
         public bool Commit { get; set; }

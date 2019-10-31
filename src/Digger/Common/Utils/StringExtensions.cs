@@ -10,12 +10,11 @@ namespace Digger.Common.Utils
 {
     public static class StringExtensions
     {
-        public static int GetElementIndex(this IEnumerable<string> elements, string element)
+        public static int GetElementIndex(this string[] elements, string element)
         {
-             for(var ndx = 0; ndx<elements.Count();ndx++)
+            for (var ndx = 0; ndx<elements.Count();ndx++)
             {
-                int endIndex = Math.Min(elements.ElementAt(ndx).Length, element.Length);
-                if (elements.ElementAt(ndx).Equals(element.Substring(0, endIndex))) return ndx;
+                if (element.StartsWith(elements[ndx])) return ndx;
             }
             return -1;
         }
