@@ -1,5 +1,6 @@
 ﻿using Common.Models;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Plugins
 {
@@ -10,6 +11,6 @@ namespace Plugins
         string Description { get; }
         BlockingCollection<FolderInfo> FolderInfos { get;  }
         long CompletedInMilliseconds { get; }
-        long Execute(string[] args);
+        IEnumerable<FolderInfo> Execute(string[] args);
     }
 }

@@ -8,7 +8,7 @@ namespace FindReplace
 {
     class LineFilter
     {
-        public static IEnumerable<FoundLine> Match(Options options, int folderIndex, string filename, string filenameExt, string[] sourceLines, string line, int lineNo)
+        public static IEnumerable<FoundLine> Match(FolderInfo folderInfo, Options options, int folderIndex, string filename, string filenameExt, string[] sourceLines, string line, int lineNo)
         {
             var result = new List<FoundLine>();
             var lineUpdated = false;
@@ -17,6 +17,8 @@ namespace FindReplace
                 if (!string.IsNullOrEmpty(line) && ((options.CaseSensitive && line.Contains(seekString)) || (!options.CaseSensitive && line.Contains(seekString, StringComparison.OrdinalIgnoreCase))))
                 {
                     if (options.And.Any() && ((options.CaseSensitive && !line.AllContains(options.And)) || (!options.CaseSensitive && !line.AllContains(options.And, StringComparison.OrdinalIgnoreCase)))) continue;
+
+                    folderInfo.SeekStrings[seekString] = folderInfo.SeekStrings[seekString] + 1;
                     var si = Math.Max(0, lineNo - options.BeforeLines);
                     var ei = Math.Min(sourceLines.Length, lineNo + options.AfterLines);
                     var noOfLines = ei - si + 1;

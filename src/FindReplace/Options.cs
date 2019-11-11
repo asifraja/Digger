@@ -13,6 +13,9 @@ namespace FindReplace
         [Option('E', "ext", Required = true, HelpText = "one or more files extensions type of files to search")]
         public IEnumerable<string> Exts { get; set; }
 
+        [Option('S', "seek", Required = true, HelpText = "filter files based on one or more text/strings")]
+        public IEnumerable<string> SeekStrings { get; set; }
+
         [Option('x', "exclude", HelpText = "exclude folders or files during file treversing with sub-folders")]
         public IEnumerable<string> ExcludeFolders { get; set; }
 
@@ -24,19 +27,19 @@ namespace FindReplace
 
         [Option('v', "verbose", Default = false, HelpText = "Prints all messages to standard output.")]
         public bool Verbose { get; set; }
+        
         [Option('u', "buffer", Default = 2048, HelpText = "output max number of chars for of line")]
         public int BufferSize { get; set; }
 
-        [Option('S', "seek", Required = true, HelpText = "filter files based on one or more text/strings")]
-        public IEnumerable<string> SeekStrings { get; set; }
-
         [Option('c', "case-sensitive", Default = false, HelpText = "case sensitive search")]
         public bool CaseSensitive { get; set; }
+
         [Option('e', "extract", HelpText = "find extact value between start and end string i.e. tokenStart***tokenEnd, must have three *")]
         public IEnumerable<string> Extract { get; set; }
 
         [Option('f', "find", HelpText = "find token text/string to find|replace with")]
         public IEnumerable<string> Find { get; set; }
+
         [Option("for", HelpText = "locate files for certain but only files that were found by the -S text")]
         public string For { get; set; }
 

@@ -52,7 +52,15 @@ namespace Digger
                         Console.WriteLine($"{args[0]} is an unknown command.");
                         return;
                     }
-                    command.Execute(args);
+                    var fi = command.Execute(args);
+                    foreach (var f in fi)
+                    {
+                        Prompt(ConsoleColor.Magenta, $"{f.Files.Count()} files in {f.Path}", true);
+                        foreach (var str in f.SeekStrings)
+                        {
+                            Prompt(ConsoleColor.DarkMagenta, $"  {str.Value} instances of {str.Key}",true);
+                        }
+                    }
                     Console.WriteLine();
                 }
             }

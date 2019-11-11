@@ -17,11 +17,10 @@ namespace Common.Utils
             var filesInTopFolder = folderInfo.Exts.AsParallel().SelectMany(searchPattern => Directory.EnumerateFiles(folderInfo.Path, searchPattern, SearchOption.TopDirectoryOnly)).ToList();
             filesInTopFolder.ForEach(t=>filesInSubfolders.Add(t));
             //var files = folderInfo.Exts.AsParallel().SelectMany(searchPattern => Directory.EnumerateFiles(folderInfo.Path, searchPattern, searchOption));
-            folderInfo.Files = filesInSubfolders.Where(f => folderInfo.ExcludedPaths.All(e => !@f.Contains(@e, StringComparison.OrdinalIgnoreCase))).ToList();
-           
+            folderInfo.Files = filesInSubfolders.Where(f => folderInfo.ExcludedPaths.All(e => !@f.Contains(@e, StringComparison.OrdinalIgnoreCase))).Select(f => new FileDetails { Path = f }).ToList();
         }
 
-        private static FolderInfo GetFolderInfo(int order, string path, IEnumerable<string> exts, IEnumerable<string> excludedFolders, bool recursive)
+        private static FolderInfo GetFolderInfo(IEnumerable<string> seekStrings, int order, string path, IEnumerable<string> exts, IEnumerable<string> excludedFolders, bool recursive)
         {
             return new FolderInfo
             {
@@ -30,16 +29,16 @@ namespace Common.Utils
                 Exts = exts,
                 ExcludedPaths = excludedFolders,
                 Recursive = recursive,
-                Files = new List<string>()
+                SeekStrings = seekStrings.Distinct().ToDictionary(key=>key,value=>0)
             };
         }
 
-        public static BlockingCollection<FolderInfo> GetFolderInfos(IEnumerable<string> foldersPath, IEnumerable<string> exts, IEnumerable<string> excludedFolders, bool recursive)
+        public static BlockingCollection<FolderInfo> GetFolderInfos(IEnumerable<string> seekStrings,IEnumerable<string> foldersPath, IEnumerable<string> exts, IEnumerable<string> excludedFolders, bool recursive)
         {
             var infos  = new BlockingCollection<FolderInfo>();
             for (var order = 0; order < foldersPath.Count(); order++)
             {
-                infos.Add(FileUtils.GetFolderInfo(order, foldersPath.ElementAt(order), exts, excludedFolders, recursive));
+                infos.Add(FileUtils.GetFolderInfo(seekStrings, order, foldersPath.ElementAt(order), exts, excludedFolders, recursive));
             }
             infos.AsParallel().ForAll(folerInfo => FileUtils.GetFiles(folerInfo));
             return infos;
