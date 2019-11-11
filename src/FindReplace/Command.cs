@@ -43,7 +43,7 @@ namespace FindReplace
             if (File.Exists(details.Path))
             {
                 var lines = File.ReadAllLines(details.Path);
-                var lineIndex = 1;
+                var lineIndex = 0;
                 foreach (var line in lines)
                 {
                     var foundLines = LineFilter.Match(folderInfo, Options, folderInfo.Order, details.Path, Path.GetExtension(details.Path), lines, line, lineIndex);                    
