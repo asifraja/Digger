@@ -58,7 +58,7 @@ namespace Digger
                         Prompt(ConsoleColor.Magenta, $"{f.Files.Count()} files in {f.Path}", true);
                         foreach (var str in f.SeekStrings)
                         {
-                            Prompt(ConsoleColor.DarkMagenta, $"  {str.Value} instances of {str.Key} in {}", true);
+                            Prompt(ConsoleColor.DarkMagenta, $"  {str.Value} instances of {str.Key}", true);
                             foreach (var fl in f.Files.Where(f => f.FoundLines.Count() > 0  && f.FoundLines.Any(x=>x.SeekString==str.Key)).OrderBy(f => f.Path))
                             {
                                 Prompt(ConsoleColor.DarkGreen, $"    {fl.Path}", true);

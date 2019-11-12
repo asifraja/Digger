@@ -18,7 +18,6 @@ namespace Digger.Common.Filters
             {
                 if (!string.IsNullOrEmpty(line) && ((options.CaseSensitive && line.Contains(seekString)) || (!options.CaseSensitive && line.Contains(seekString, StringComparison.OrdinalIgnoreCase))))
                 {
-                    if (options.And.Any() && ((options.CaseSensitive && !line.AllContains(options.And)) || (!options.CaseSensitive && !line.AllContains(options.And, StringComparison.OrdinalIgnoreCase)))) continue;
                     var si = Math.Max(0, lineNo - options.BeforeLines);
                     var ei = Math.Min(sourceLines.Length, lineNo + options.AfterLines);
                     var noOfLines = ei - si + 1;
@@ -43,6 +42,7 @@ namespace Digger.Common.Filters
                             }
                         }
                     }
+                    if (options.And.Any() && ((options.CaseSensitive && !previousLine.AllContains(options.And)) || (!options.CaseSensitive && !previousLine.AllContains(options.And, StringComparison.OrdinalIgnoreCase)))) continue;
                     result.Add(new FoundLine(filename, filenameExt, string.Join(options.Join ? "" : Environment.NewLine, lines), lineUpdated ? previousLine : string.Empty, lineNo + 1, seekString, folderIndex,true));
                 }
             }
