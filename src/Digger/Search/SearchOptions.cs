@@ -33,10 +33,13 @@ namespace Digger.Search
         [Option('j', "join", Default = false, HelpText = "join/concatenate all lines, see flags --after and --before.")]
         public bool Join { get; set; }
 
-        [Option('p', "purge", Default = false, HelpText = "purge line(s) where text/string was found, see flag --commit and --text")]
+        [Option('p', "purge", Default = false, HelpText = "purge line(s) where text/string was found, see flag --commit and --seek")]
         public bool PurgeLine { get; set; }
 
         [Option("and",  HelpText = "Seek must have and text on the same line")]
         public IEnumerable<string> And { get; set; }
+        
+        [Option("reject", HelpText = "Reject found line if any of the rejected string found")]
+        public IEnumerable<string> Reject { get; set; }
     }
 }

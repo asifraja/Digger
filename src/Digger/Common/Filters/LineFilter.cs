@@ -43,6 +43,7 @@ namespace Digger.Common.Filters
                         }
                     }
                     if (options.And.Any() && ((options.CaseSensitive && !previousLine.AllContains(options.And)) || (!options.CaseSensitive && !previousLine.AllContains(options.And, StringComparison.OrdinalIgnoreCase)))) continue;
+                    if (options.Reject.Any() && ((options.CaseSensitive && previousLine.AllContains(options.Reject)) || (!options.CaseSensitive && previousLine.AllContains(options.Reject, StringComparison.OrdinalIgnoreCase)))) continue;
                     result.Add(new FoundLine(filename, filenameExt, string.Join(options.Join ? "" : Environment.NewLine, lines), lineUpdated ? previousLine : string.Empty, lineNo + 1, seekString, folderIndex,true));
                 }
             }
