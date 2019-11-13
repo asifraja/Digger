@@ -41,5 +41,8 @@ namespace Digger.Search
         
         [Option("reject", HelpText = "Reject found line if any of the rejected string found")]
         public IEnumerable<string> Reject { get; set; }
+
+        [Option("anyone", HelpText = "Include the line if any of the text found on the line")]
+        public IEnumerable<string> Anyone { get; set; }
     }
 }

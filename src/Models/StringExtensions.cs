@@ -50,7 +50,25 @@ namespace Common
             }
             return true;
         }
+        
+        public static bool AtleastOneContains(this string source, IEnumerable<string> toCheck, StringComparison comp)
+        {
+            foreach (var tok in toCheck)
+            {
+                if (source.Contains(tok, comp)) return true;
+            }
+            return false;
+        }
 
+        public static bool AtleastOneContains(this string source, IEnumerable<string> toCheck)
+        {
+            foreach (var tok in toCheck)
+            {
+                if (source.Contains(tok)) return true;
+            }
+            return false;
+        }
+        
         public static string FilePathAtAssemblyDirectory(this string foldername, string fileName)
         {
             string codeBase = Assembly.GetExecutingAssembly().CodeBase;

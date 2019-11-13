@@ -60,5 +60,11 @@ namespace FindReplace
 
         [Option("and", HelpText = "Seek must have and text on the same line")]
         public IEnumerable<string> And { get; set; }
+
+        [Option("reject", HelpText = "Reject found line if any of the rejected string found")]
+        public IEnumerable<string> Reject { get; set; }
+
+        [Option("anyone", HelpText = "Include the line if any of the text found on the line")]
+        public IEnumerable<string> Anyone { get; set; }
     }
 }
