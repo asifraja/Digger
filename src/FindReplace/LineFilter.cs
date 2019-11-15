@@ -29,22 +29,48 @@ namespace FindReplace
                         {
                             foreach (var find in options.Find)
                             {
-                                if (find.Contains('|'))
+                                var mode = 0;
+                                var toFind = find;
+                                var filter = string.Empty;
+                                var extractedText = string.Empty;
+
+                                if (toFind.Contains("***"))
                                 {
-                                    var findParts = find.Split('|');
-                                    if (lines[lineNdx].Contains(findParts[0]))
+                                    mode = 1;
+                                    filter = toFind.Trim().Substring(1, toFind.IndexOf(']') - 1);
+                                    toFind = toFind.Substring(toFind.IndexOf(']') + 1);
+                                    extractedText = lines[lineNdx].ExtractUsingTokens(new[] { filter }).FirstOrDefault();
+                                }
+                                else if (toFind.Contains('[') && toFind.Contains(']'))
+                                {
+                                    mode = 2;
+                                    filter = toFind.Trim().Substring(1, toFind.IndexOf(']') - 1);
+                                    toFind = toFind.Substring(toFind.IndexOf(']') + 1);
+                                }
+                                if (toFind.Contains('|'))
+                                {
+                                    var findParts = toFind.Split('|');
+                                    if (lines[lineNdx].Contains(findParts[0], StringComparison.OrdinalIgnoreCase))
                                     {
-                                        lineUpdated = true;
-                                        lines[lineNdx] = lines[lineNdx].Replace(findParts[0], findParts[1]);
+                                        if (mode == 1 && !string.IsNullOrEmpty(extractedText))
+                                        {
+                                            lineUpdated = true;
+                                            lines[lineNdx] = lines[lineNdx].Replace(findParts[0], findParts[1].Replace("$$", extractedText));
+                                        }
+                                        else if ((mode == 2 && lines[lineNdx].Contains(filter, StringComparison.OrdinalIgnoreCase)) || (mode == 0))
+                                        {
+                                            lineUpdated = true;
+                                            lines[lineNdx] = lines[lineNdx].Replace(findParts[0], findParts[1]);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                     if (options.And.Any() && ((options.CaseSensitive && !previousLine.AllContains(options.And)) || (!options.CaseSensitive && !previousLine.AllContains(options.And, StringComparison.OrdinalIgnoreCase)))) continue;
-                    if (options.Reject.Any() && ((options.CaseSensitive && previousLine.AllContains(options.Reject)) || (!options.CaseSensitive && previousLine.AllContains(options.Reject, StringComparison.OrdinalIgnoreCase)))) continue;
-                    if (options.Anyone.Any() && ((options.CaseSensitive && !previousLine.AtleastOneContains(options.Anyone)) || (!options.CaseSensitive && !previousLine.AtleastOneContains(options.Anyone, StringComparison.OrdinalIgnoreCase)))) continue;
-                    result.Add(new FoundLine(filename, filenameExt, string.Join(options.Join ? "" : Environment.NewLine, lines), lineUpdated ? previousLine : string.Empty, lineNo + 1, seekString, folderIndex, true));
+                    if (options.Not.Any() && ((options.CaseSensitive && previousLine.AtleastOneContains(options.Not)) || (!options.CaseSensitive && previousLine.AtleastOneContains(options.Not, StringComparison.OrdinalIgnoreCase)))) continue;
+                    if (options.Or.Any() && ((options.CaseSensitive && !previousLine.AtleastOneContains(options.Or)) || (!options.CaseSensitive && !previousLine.AtleastOneContains(options.Or, StringComparison.OrdinalIgnoreCase)))) continue;
+                    result.Add(new FoundLine(filename, filenameExt, string.Join(options.Join ? "" : Environment.NewLine, lines), lineUpdated && !options.Mute ? previousLine : string.Empty, lineNo + 1, seekString, folderIndex, true));
                 }
             }
             return result;

@@ -24,7 +24,7 @@ namespace Digger
             })
             .WithParsed<OptionsFile>(options =>
             {
-                var parafile = File.ReadAllLines(options.File);
+                var parafile = File.ReadAllLines(options.File).Where(l=>!l.Trim().StartsWith("#")).ToArray();
                 if (parafile[0].ToLowerInvariant().StartsWith("search"))
                 {
                     Parser.Default.ParseArguments<SearchOptions>(parafile).WithParsed<SearchOptions>(opts => { SearchExecute(opts); });

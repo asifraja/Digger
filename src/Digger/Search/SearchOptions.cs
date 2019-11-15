@@ -39,10 +39,13 @@ namespace Digger.Search
         [Option("and",  HelpText = "Seek must have and text on the same line")]
         public IEnumerable<string> And { get; set; }
         
-        [Option("reject", HelpText = "Reject found line if any of the rejected string found")]
-        public IEnumerable<string> Reject { get; set; }
+        [Option("not", HelpText = "Exclude the found line if any of the 'not' string is found")]
+        public IEnumerable<string> Not { get; set; }
 
-        [Option("anyone", HelpText = "Include the line if any of the text found on the line")]
-        public IEnumerable<string> Anyone { get; set; }
+        [Option("or", HelpText = "Include the found line if any of the or text exists")]
+        public IEnumerable<string> Or { get; set; }
+
+        [Option('m', "mute", Default = false, HelpText = "do not display before line after the find and replace operation")]
+        public bool Mute { get; set; }
     }
 }
