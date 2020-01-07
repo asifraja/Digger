@@ -64,45 +64,60 @@ namespace Digger.Compare
         {
             var options = Options as CompareOptions;
             var output = new StringBuilder();
-            output.Append("<html><style>.lineno {color:blue;padding:5px;margin-right:5px;} .filename {color:green;} .deleted{color:red;background-color:blue;} .modified{color:red;background-color:blue;} .inserted {color:green;background-color:yellow;} .unchanged{color:black;background-color:lightgrey;} .container {width: 98%;margin: auto;padding: 10px;} .file1 {width: 50%;background: lightgrey;float: left;} .file2 {margin-left: 5%;background: lightgrey;}</style><body>");
+            output.Append("<html><style>.lineno {color:blue;padding:5px;margin-right:5px;} .filename {color:green;} .deleted{color:red;background-color:blue;} .modified{color:red;background-color:blue;} .inserted {color:green;background-color:yellow;} .unchanged{color:black;background-color:lightgrey;} .container {width: 98%;margin: auto;padding: 10px;} .file1 {width: 50%;background: lightgrey;float: left;} .file2 {margin-left: 5%;background: lightgrey;} .warn{color:red;}</style><body>");
             output.Append("<section class=\"container\">");
             if (options.IncludeMissing)
             {
+                output.Append($"<hr/>");
+                output.Append($"<center><b>FOLDERS</b></center>");
+                output.Append($"<hr/>");
+                output.Append(BuildDiffPanel("file1", "SOURCE: <b>" + options.Folders.FirstOrDefault()+"</b>", null));
+                output.Append(BuildDiffPanel("file2", "TARGET: <b>" + options.WithFolder + "</b>", null));
+                output.Append($"<hr/>");
+                output.Append($"<center><b>MISSING FILES</b></center>");
+                output.Append($"<hr/>");
                 foreach (var file in Files)
                 {
                     var f1 = options.WithFolder + file.TrailFilePath(options.Folders.FirstOrDefault());
                     if (File.Exists(f1)) continue;
                     output.Append(BuildDiffPanel("file1", file, null));
-                    output.Append(BuildDiffPanel("file2", "MISSING", null));
+                    output.Append(BuildDiffPanel("file2", "** MISSING **", null));
                     Stats.TotalInstances++;
                 }
+                output.Append($"<hr/>");
+                output.Append($"<center><b>ADDITIONAL FILES</b></center>");
                 output.Append($"<hr/>");
                 foreach (var file in WithFiles)
                 {
                     var f1 = options.Folders.FirstOrDefault() + file.TrailFilePath(options.WithFolder);
                     if (File.Exists(f1)) continue;
-                    output.Append(BuildDiffPanel("file1", "MISSING", null));
+                    output.Append(BuildDiffPanel("file1", "** ADDED **", null));
                     output.Append(BuildDiffPanel("file2", file, null));
                     Stats.TotalInstances++;
                 }
                 output.Append($"<hr/>");
             }
             var models = _models.Where(m => m.HasDifference);
-            if (options.Inline)
+            if (models.Count() > 0)
             {
-                foreach (var model in models)
+                output.Append($"<center><b>DIFFERENT FILES</b></center>");
+                output.Append($"<hr/>");
+                if (options.Inline)
                 {
-                    output.Append(BuildInlinePanel("inline", model));
-                    if (_models.Count > 1) output.Append($"<hr/>");
+                    foreach (var model in models)
+                    {
+                        output.Append(BuildInlinePanel("inline", model));
+                        if (_models.Count > 1) output.Append($"<hr/>");
+                    }
                 }
-            }
-            else
-            {
-                foreach (var model in models)
+                else
                 {
-                    output.Append(BuildDiffPanel("file1", model.ThisFilename, model.SideBySideDiffModel.OldText));
-                    output.Append(BuildDiffPanel("file2", model.WithFilename, model.SideBySideDiffModel.NewText));
-                    if (_models.Count > 1) output.Append($"<hr/>");
+                    foreach (var model in models)
+                    {
+                        output.Append(BuildDiffPanel("file1", model.ThisFilename, model.SideBySideDiffModel.OldText));
+                        output.Append(BuildDiffPanel("file2", model.WithFilename, model.SideBySideDiffModel.NewText));
+                        if (_models.Count > 1) output.Append($"<hr/>");
+                    }
                 }
             }
             output.Append("</section");
@@ -150,9 +165,13 @@ namespace Digger.Compare
         {
             var options = Options as CompareOptions;
             var output = new StringBuilder($"<div class='{panelName}'>");
-            output.Append($"<span class='filename'>{filename}</span><br/><br/>");
-            if (model != null)
+            if (model == null)
             {
+                output.Append($"<span class='filename'>{filename}</span><br/><br/>");
+            }
+            else
+            {
+                output.Append($"<span class='filename'>{filename}</span><br/><br/>");
                 foreach (var line in model.Lines)
                 {
                     var lineShown = false;
