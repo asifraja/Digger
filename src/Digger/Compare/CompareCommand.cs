@@ -35,7 +35,7 @@ namespace Digger.Compare
                         var fileName1 = Files[fileIndex];
                         var withFilename = options.WithFolder + fileName1.TrailFilePath(Options.Folders.FirstOrDefault());
                         string filenameExt = Path.GetExtension(fileName1).ToLower();
-                        if (File.Exists(fileName1) && File.Exists(withFilename))
+                        if (!options.IncludeMissing && File.Exists(fileName1) && File.Exists(withFilename))
                         {
                             var content1 = File.ReadAllText(fileName1);
                             var content2 = File.ReadAllText(withFilename);
@@ -62,6 +62,7 @@ namespace Digger.Compare
         }
         private void Process()
         {
+            var shallWriteToFile = false;
             var options = Options as CompareOptions;
             var output = new StringBuilder();
             output.Append("<html><style>.lineno {color:blue;padding:5px;margin-right:5px;} .filename {color:green;} .deleted{color:red;background-color:blue;} .modified{color:red;background-color:blue;} .inserted {color:green;background-color:yellow;} .unchanged{color:black;background-color:lightgrey;} .container {width: 98%;margin: auto;padding: 10px;} .file1 {width: 50%;background: lightgrey;float: left;} .file2 {margin-left: 5%;background: lightgrey;} .warn{color:red;}</style><body>");
@@ -80,6 +81,7 @@ namespace Digger.Compare
                 {
                     var f1 = options.WithFolder + file.TrailFilePath(options.Folders.FirstOrDefault());
                     if (File.Exists(f1)) continue;
+                    shallWriteToFile = true;
                     output.Append(BuildDiffPanel("file1", file, null));
                     output.Append(BuildDiffPanel("file2", "** MISSING **", null));
                     Stats.TotalInstances++;
@@ -91,6 +93,7 @@ namespace Digger.Compare
                 {
                     var f1 = options.Folders.FirstOrDefault() + file.TrailFilePath(options.WithFolder);
                     if (File.Exists(f1)) continue;
+                    shallWriteToFile = true;
                     output.Append(BuildDiffPanel("file1", "** ADDED **", null));
                     output.Append(BuildDiffPanel("file2", file, null));
                     Stats.TotalInstances++;
@@ -98,8 +101,9 @@ namespace Digger.Compare
                 output.Append($"<hr/>");
             }
             var models = _models.Where(m => m.HasDifference);
-            if (models.Count() > 0)
+            if (!options.IncludeMissing && models.Count() > 0)
             {
+                shallWriteToFile = true;
                 output.Append($"<center><b>DIFFERENT FILES</b></center>");
                 output.Append($"<hr/>");
                 if (options.Inline)
@@ -122,7 +126,7 @@ namespace Digger.Compare
             }
             output.Append("</section");
             output.Append("</body></html>");
-            if (!string.IsNullOrEmpty(options.Output))
+            if (shallWriteToFile && !string.IsNullOrEmpty(options.Output))
             {
                 File.WriteAllText(options.Output, output.ToString());
             }
