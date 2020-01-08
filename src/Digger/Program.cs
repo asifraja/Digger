@@ -13,7 +13,7 @@ namespace Digger
         static void Main(string[] args)
         {
             Console.WriteLine("---------------------------------------------------------------");
-            Console.WriteLine($" Digger cli - Copyright 2019-{DateTime.UtcNow.Year + 1}.");
+            Console.WriteLine($" Digger cli - Copyright 2019-{DateTime.UtcNow.Year}.");
             Console.WriteLine($" Author: Asif Raja.");
             Console.WriteLine("---------------------------------------------------------------");
             var watch = System.Diagnostics.Stopwatch.StartNew();
