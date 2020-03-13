@@ -12,7 +12,8 @@ namespace Digger
             {
                 string[] pluginPaths = new string[]
                 {
-                    @"D:\Work\Digger\src\FindReplace\bin\Debug\netcoreapp3.0\FindReplace.Plugin.dll"
+                    @"D:\Work\Digger\src\FindReplace\bin\Debug\netcoreapp3.0\FindReplace.Plugin.dll",
+                    @"D:\Work\Digger\src\Analysis\bin\Debug\netcoreapp3.0\Analysis.Plugin.dll"
                 };
 
                 var plugins = pluginPaths.SelectMany(pluginPath => { return PluginLoader.CreateInstance(pluginPath); }).ToList();
@@ -45,30 +46,34 @@ namespace Digger
                 else
                 {
                     var commandName = args[0].ToLower().Trim();
-                    Console.WriteLine($"-- {commandName} --");
+                    Prompt(ConsoleColor.White, $"Command : {commandName}");
+                    Console.WriteLine();
                     IPluginAssembly command = plugins.FirstOrDefault(c => c.Verb == commandName);
                     if (command == null)
                     {
-                        Console.WriteLine($"{args[0]} is an unknown command.");
+                        Console.WriteLine($"{commandName} is an unknown command.");
                         return;
                     }
                     var fi = command.Execute(args);
-                    foreach (var f in fi.OrderBy(o => o.Order))
+                    if (fi != null)
                     {
-                        Prompt(ConsoleColor.Magenta, $"{f.Files.Count()} files in {f.Path}", true);
-                        foreach (var str in f.SeekStrings)
+                        foreach (var f in fi.OrderBy(o => o.Order))
                         {
-                            Prompt(ConsoleColor.DarkMagenta, $"  {str.Value} instances of {str.Key}", true);
-                            foreach (var fl in f.Files.Where(f => f.FoundLines.Count() > 0  && f.FoundLines.Any(x=>x.SeekString==str.Key)).OrderBy(f => f.Path))
+                            Prompt(ConsoleColor.Magenta, $"{f.Files.Count()} files in {f.Path}", true);
+                            foreach (var str in f.SeekStrings)
                             {
-                                Prompt(ConsoleColor.DarkGreen, $"    {fl.Path}", true);
-                                foreach (var l in fl.FoundLines.OrderBy(f => f.SeekedString).ThenBy(f => f.Filename).ThenBy(f => f.LineNo))
+                                Prompt(ConsoleColor.DarkMagenta, $"  {str.Value} instances of {str.Key}", true);
+                                foreach (var fl in f.Files.Where(f => f.FoundLines.Count() > 0 && f.FoundLines.Any(x => x.SeekString == str.Key)).OrderBy(f => f.Path))
                                 {
-                                    Prompt(ConsoleColor.Green, $"     {l.LineNo} {l.Line.Trim()}", true);
+                                    Prompt(ConsoleColor.DarkGreen, $"    {fl.Path}", true);
+                                    foreach (var l in fl.FoundLines.OrderBy(f => f.SeekedString).ThenBy(f => f.Filename).ThenBy(f => f.LineNo))
+                                    {
+                                        Prompt(ConsoleColor.Green, $"     {l.LineNo} {l.Line.Trim()}", true);
+                                    }
                                 }
                             }
+                            Console.WriteLine();
                         }
-                        Console.WriteLine();
                     }
                 }
             }
@@ -76,6 +81,9 @@ namespace Digger
             {
                 Console.WriteLine(ex);
             }
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.Write("Press any key to exist...");
             Console.ReadKey();
         }
 

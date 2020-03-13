@@ -10,7 +10,10 @@ namespace Digger.Common.Options
 
         [Option('E', "ext", Required = true, HelpText = "one or more files extensions type of files to search")]
         public IEnumerable<string> Exts { get; set; }
-
+        
+        [Option("scope", Required = false, HelpText = "limit files within the scopped sub folders. eg.\\bin\\")]
+        public IEnumerable<string> ScopedFolders { get; set; }
+        
         [Option('x', "exclude", HelpText = "exclude folders or files during file treversing with sub-folders")]
         public IEnumerable<string> ExcludeFolders { get; set; }
 

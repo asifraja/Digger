@@ -21,7 +21,7 @@ namespace Digger.Compare
         public string[] WithFiles { get; }
         public CompareCommand(CompareOptions options) : base(options)
         {
-            WithFiles = GetFiles(new[] { options.WithFolder }, options.ExcludeFolders, options.Exts, options.Recursive).ToArray();
+            WithFiles = GetFiles(new[] { options.WithFolder }, options.ExcludeFolders, options.Exts,options.ScopedFolders, options.Recursive).ToArray();
         }
 
         public void Execute()

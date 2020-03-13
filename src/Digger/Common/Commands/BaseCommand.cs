@@ -20,7 +20,7 @@ namespace Digger.Common.Commands
 
         public BaseCommand(GenericOptions genericOptions) : this()
         {
-            Files = GetFiles(genericOptions.Folders, genericOptions.ExcludeFolders, genericOptions.Exts, genericOptions.Recursive).ToArray();
+            Files = GetFiles(genericOptions.Folders, genericOptions.ExcludeFolders, genericOptions.Exts, genericOptions.ScopedFolders, genericOptions.Recursive).ToArray();
             Stats.TotalFiles = Files.Length;
             Options = genericOptions;
         }
@@ -28,10 +28,15 @@ namespace Digger.Common.Commands
 
         public string[] Files { get; }
         public GenericOptions Options { get; }
-        public IEnumerable<string> GetFiles(IEnumerable<string> folders, IEnumerable<string> excludeFolders, IEnumerable<string> exts, bool recursive)
+        public IEnumerable<string> GetFiles(IEnumerable<string> folders, IEnumerable<string> excludeFolders, IEnumerable<string> exts, IEnumerable<string> scopedFolders, bool recursive)
         {
             var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             var files = folders.AsParallel().SelectMany(path => exts.AsParallel().SelectMany(searchPattern => Directory.EnumerateFiles(path, searchPattern, searchOption)));
+            if (scopedFolders.Any())
+            {
+                return files.Where(f => scopedFolders.All(e => @f.Contains(@e, StringComparison.OrdinalIgnoreCase)) && excludeFolders.All(e => !@f.Contains(@e, StringComparison.OrdinalIgnoreCase))).ToArray();
+
+            }
             return files.Where(f => excludeFolders.All(e => !@f.Contains(@e, StringComparison.OrdinalIgnoreCase))).ToArray();
         }
     }
