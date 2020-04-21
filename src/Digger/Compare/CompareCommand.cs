@@ -65,7 +65,7 @@ namespace Digger.Compare
             var shallWriteToFile = false;
             var options = Options as CompareOptions;
             var output = new StringBuilder();
-            output.Append("<html><style>.lineno {color:blue;padding:5px;margin-right:5px;} .filename {color:green;} .deleted{color:red;background-color:blue;} .modified{color:red;background-color:blue;} .inserted {color:green;background-color:yellow;} .unchanged{color:black;background-color:lightgrey;} .container {width: 98%;margin: auto;padding: 10px;} .file1 {width: 50%;background: lightgrey;float: left;} .file2 {margin-left: 5%;background: lightgrey;} .warn{color:red;}</style><body>");
+            output.Append("<html><style>.lineno {color:blue;padding:5px;margin-right:5px;} .filename {color:green;} .deleted{color:white;background-color:#2199e8;} .modified{color:white;background-color:#2199e8;} .inserted {color:green;background-color:yellow;} .unchanged{color:black;background-color:lightgrey;} .container {width: 98%;margin: auto;padding: 10px;} .file1 {width: 50%;background: lightgrey;float: left;} .file2 {margin-left: 5%;background: lightgrey;} .warn{color:red;}</style><body>");
             output.Append("<section class=\"container\">");
             if (options.IncludeMissing)
             {
