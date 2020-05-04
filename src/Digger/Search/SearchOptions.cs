@@ -21,7 +21,7 @@ namespace Digger.Search
         [Option("for", HelpText = "locate files for certain but only files that were found by the -S text")]
         public string For { get; set; }
 
-        [Option('u', "commit", Default = false, HelpText = "commit and update files, see flags -d, --find/--replace.")]
+        [Option("commit", Default = false, HelpText = "commit and update files, see flags -d, --find/--replace.")]
         public bool Commit { get; set; }
 
         [Option('b', "before", Default = 0, HelpText = "include additional lines before the found text, see flag --text.")]
